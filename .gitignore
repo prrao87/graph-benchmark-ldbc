@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.DS_Store
+
+# Virtual environments
+.venv
+
+# Local
+csv
+social_network-sf1-CsvBasic-StringDateFormatter.tar.zst
+*.kuzu
+*.lbdb
+*.lbug
+*.lance
