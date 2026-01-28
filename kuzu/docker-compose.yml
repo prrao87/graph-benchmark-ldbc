@@ -1,0 +1,11 @@
+services:
+  explorer:
+    image: kuzudb/explorer:latest
+    restart: unless-stopped
+    environment:
+      - MODE=READ_ONLY
+      - KUZU_FILE=ldbc_snb_sf1.kuzu
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/database
