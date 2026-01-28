@@ -1,0 +1,23 @@
+services:
+  neo4j:
+    image: neo4j:${NEO4J_VERSION}
+    container_name: ldbc-snb-sf1-neo4j
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
+      # DB and server
+      - NEO4J_server_memory_pagecache_size=2G
+      - NEO4J_server_memory_heap_initial__size=2G
+      - NEO4J_server_memory_heap_max__size=4G
+    ports:
+      - 7687:7687
+    volumes:
+      - logs_snb:/logs
+      - data_snb:/data
+      - plugins_snb:/plugins
+      - import_snb:/import
+
+volumes:
+  logs_snb:
+  data_snb:
+  plugins_snb:
+  import_snb:
