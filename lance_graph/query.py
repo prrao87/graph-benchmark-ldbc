@@ -175,8 +175,7 @@ def _execute_group_distinct_count(
 def run_query1(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
     "Who are the names of people who live in Glasgow and are interested in Napoleon?"
     query = """
-        MATCH (p:Person)-[:personIsLocatedIn]->(pl:Place),
-              (p)-[:hasInterest]->(t:Tag)
+        MATCH (t:Tag)<-[:hasInterest]-(p:Person)-[:personIsLocatedIn]->(pl:Place)
         WHERE pl.name = "Glasgow" AND t.name = "Napoleon"
         RETURN p.firstname, p.lastname
     """
@@ -564,7 +563,8 @@ def run_query27(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
 def run_query28(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
     "Are there people in Manila interested in tags of type BritishRoyalty?"
     query = """
-        MATCH (tc:Tagclass {name: "BritishRoyalty"})<-[:hasType]-(t:Tag)<-[:hasInterest]-(p:Person)-[:personIsLocatedIn]->(l:Place {name: "Manila"})
+        MATCH (p:Person)-[:hasInterest]->(t:Tag)-[:hasType]->(tc:Tagclass {name: "BritishRoyalty"}),
+            (p)-[:personIsLocatedIn]->(l:Place {name: "Manila"})
         RETURN DISTINCT p.id AS id
     """
     return _execute_distinct_count(
