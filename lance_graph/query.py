@@ -121,56 +121,26 @@ def _execute(
     return result
 
 
-def _execute_distinct_count(
+def _execute_count_as_bool(
     cfg: GraphConfig,
     datasets: dict[str, pa.Table],
     idx: int,
     query: str,
     *,
-    distinct_col: str,
+    count_col: str,
     output_col: str,
-    as_bool: bool = False,
-) -> pl.DataFrame:
-    print(f"\nQuery {idx}:\n{query}")
-    result = execute_query(query, cfg, datasets)
-    df = to_polars(result)
-    count = df.select(pl.col(distinct_col).n_unique()).item()
-    value = bool(count) if as_bool else int(count)
-    out = pl.DataFrame({output_col: [value]})
-    print(out)
-    return out
-
-
-def _execute_group_distinct_count(
-    cfg: GraphConfig,
-    datasets: dict[str, pa.Table],
-    idx: int,
-    query: str,
-    *,
-    group_col: str,
-    distinct_col: str,
-    output_count_col: str,
-    output_group_col: str,
-    limit: int = 1,
 ) -> pl.DataFrame:
     print(f"\nQuery {idx}:\n{query}")
     result = execute_query(query, cfg, datasets)
     df = to_polars(result)
     if df.is_empty():
-        out = pl.DataFrame({output_group_col: [], output_count_col: []})
-        print(out)
-        return out
-    agg = df.group_by(group_col).agg(
-        pl.col(distinct_col).n_unique().alias(output_count_col)
-    )
-    agg = agg.sort(output_count_col, descending=True)
-    if limit:
-        agg = agg.head(limit)
-    if output_group_col != group_col:
-        agg = agg.rename({group_col: output_group_col})
-    print(agg)
-    return agg
-
+        value = False
+    else:
+        count = df.select(pl.col(count_col)).item()
+        value = bool(count)
+    out = pl.DataFrame({output_col: [value]})
+    print(out)
+    return out
 
 def run_query1(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
     "Who are the names of people who live in Glasgow and are interested in Napoleon?"
@@ -287,18 +257,11 @@ def run_query11(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (p:Person)-[:workAt]->(o:Organisation)
         WHERE o.type <> "university"
-        RETURN o.name AS org_name, p.id AS person_id
+        RETURN COUNT(DISTINCT p.id) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1
     """
-    return _execute_group_distinct_count(
-        cfg,
-        datasets,
-        11,
-        query,
-        group_col="org_name",
-        distinct_col="person_id",
-        output_count_col="num_e",
-        output_group_col="o.name",
-    )
+    return _execute(cfg, datasets, 11, query)
 
 
 def run_query12(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
@@ -306,16 +269,9 @@ def run_query12(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(p:Person)-[:personIsLocatedIn]->(l:Place)
         WHERE c.content IS NOT NULL AND l.name = "Berlin"
-        RETURN DISTINCT c.id AS id
+        RETURN COUNT(DISTINCT c.id) AS num_comments
     """
-    return _execute_distinct_count(
-        cfg,
-        datasets,
-        12,
-        query,
-        distinct_col="id",
-        output_col="num_comments",
-    )
+    return _execute(cfg, datasets, 12, query)
 
 
 def run_query13(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
@@ -323,32 +279,18 @@ def run_query13(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)<-[:likeComment]-(p2:Person)
         WHERE p.firstname = "Rafael" AND p.lastname = "Alonso"
-        RETURN DISTINCT p2.id AS id
+        RETURN COUNT(DISTINCT p2.id) AS num_persons
     """
-    return _execute_distinct_count(
-        cfg,
-        datasets,
-        13,
-        query,
-        distinct_col="id",
-        output_col="num_persons",
-    )
+    return _execute(cfg, datasets, 13, query)
 
 
 def run_query14(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
     "Number of forums with tags belonging to the Athlete tagclass."
     query = """
         MATCH (f:Forum)-[:forumHasTag]->(:Tag)-[:hasType]->(:Tagclass {name: "Athlete"})
-        RETURN DISTINCT f.id AS id
+        RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute_distinct_count(
-        cfg,
-        datasets,
-        14,
-        query,
-        distinct_col="id",
-        output_col="num_forums",
-    )
+    return _execute(cfg, datasets, 14, query)
 
 
 def run_query15(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
@@ -356,16 +298,9 @@ def run_query15(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (f:Forum)-[:hasModerator]->(p:Person)-[:workAt]->(o:Organisation)
         WHERE o.name = "Air_Tanzania"
-        RETURN DISTINCT f.id AS id
+        RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute_distinct_count(
-        cfg,
-        datasets,
-        15,
-        query,
-        distinct_col="id",
-        output_col="num_forums",
-    )
+    return _execute(cfg, datasets, 15, query)
 
 
 def run_query16(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
@@ -397,16 +332,9 @@ def run_query18(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         MATCH (p:Person)-[:studyAt]->(o:Organisation), (p)-[:hasInterest]->(t:Tag)
         WHERE o.name = "The_Oxford_Educational_Institutions"
           AND t.name = "William_Shakespeare"
-        RETURN DISTINCT p.id AS id
+        RETURN COUNT(DISTINCT p.id) AS num_p
     """
-    return _execute_distinct_count(
-        cfg,
-        datasets,
-        18,
-        query,
-        distinct_col="id",
-        output_col="num_p",
-    )
+    return _execute(cfg, datasets, 18, query)
 
 
 def run_query19(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
@@ -437,16 +365,15 @@ def run_query21(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         MATCH (p:Post)<-[:likePost]-(p2:Person)
         WHERE p2.firstname = "Bill" AND p2.lastname = "Moore"
           AND p.id = 1649268446863
-        RETURN DISTINCT p.id AS id
+        RETURN COUNT(DISTINCT p.id) AS liked
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         21,
         query,
-        distinct_col="id",
+        count_col="liked",
         output_col="liked",
-        as_bool=True,
     )
 
 
@@ -454,16 +381,15 @@ def run_query22(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     "Did anyone who works at Linxair create a comment that replied to a post?"
     query = """
         MATCH (o:Organisation {name: "Linxair"})<-[:workAt]-(p:Person)<-[:commentHasCreator]-(c:Comment)-[:replyOfPost]->(post:Post)
-        RETURN DISTINCT c.id AS id
+        RETURN COUNT(DISTINCT c.id) AS has_reply_comment
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         22,
         query,
-        distinct_col="id",
+        count_col="has_reply_comment",
         output_col="has_reply_comment",
-        as_bool=True,
     )
 
 
@@ -472,16 +398,15 @@ def run_query23(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (p:Person)<-[:hasModerator]-(f:Forum)-[:forumHasTag]->(t:Tag)
         WHERE t.name = "Norah_Jones" AND p.lastname = "Gurung"
-        RETURN DISTINCT p.id AS id
+        RETURN COUNT(DISTINCT p.id) AS has_moderator
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         23,
         query,
-        distinct_col="id",
+        count_col="has_moderator",
         output_col="has_moderator",
-        as_bool=True,
     )
 
 
@@ -490,16 +415,15 @@ def run_query24(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (p:Person)-[:personIsLocatedIn]->(l:Place), (p)-[:hasInterest]->(t:Tag)
         WHERE l.name = "Paris" AND t.name = "Cate_Blanchett"
-        RETURN DISTINCT p.id AS id
+        RETURN COUNT(DISTINCT p.id) AS has_person
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         24,
         query,
-        distinct_col="id",
+        count_col="has_person",
         output_col="has_person",
-        as_bool=True,
     )
 
 
@@ -509,16 +433,15 @@ def run_query25(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         MATCH (amit:Person)-[:knows]->(p2:Person)-[:studyAt]->(o:Organisation)
         WHERE amit.firstname = "Amit" AND amit.lastname = "Singh"
           AND o.name = "MIT_School_of_Engineering"
-        RETURN DISTINCT p2.id AS id
+        RETURN COUNT(DISTINCT p2.id) AS knows_someone
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         25,
         query,
-        distinct_col="id",
+        count_col="knows_someone",
         output_col="knows_someone",
-        as_bool=True,
     )
 
 
@@ -527,16 +450,15 @@ def run_query26(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (f:Forum)-[:hasMember]->(p:Person), (f)-[:forumHasTag]->(t:Tag)
         WHERE p.id = 10995116287854 AND t.name = "Benjamin_Franklin"
-        RETURN DISTINCT f.id AS id
+        RETURN COUNT(DISTINCT f.id) AS has_forum
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         26,
         query,
-        distinct_col="id",
+        count_col="has_forum",
         output_col="has_forum",
-        as_bool=True,
     )
 
 
@@ -547,16 +469,15 @@ def run_query27(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
               (p)-[:personIsLocatedIn]->(l:Place),
               (c)-[:commentHasTag]->(t:Tag)
         WHERE l.name = "Toronto" AND t.name = "Winston_Churchill"
-        RETURN DISTINCT c.id AS id
+        RETURN COUNT(DISTINCT c.id) AS has_comment
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         27,
         query,
-        distinct_col="id",
+        count_col="has_comment",
         output_col="has_comment",
-        as_bool=True,
     )
 
 
@@ -565,16 +486,15 @@ def run_query28(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     query = """
         MATCH (p:Person)-[:hasInterest]->(t:Tag)-[:hasType]->(tc:Tagclass {name: "BritishRoyalty"}),
             (p)-[:personIsLocatedIn]->(l:Place {name: "Manila"})
-        RETURN DISTINCT p.id AS id
+        RETURN COUNT(DISTINCT p.id) AS has_people
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         28,
         query,
-        distinct_col="id",
+        count_col="has_people",
         output_col="has_people",
-        as_bool=True,
     )
 
 
@@ -584,16 +504,15 @@ def run_query29(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         MATCH (p:Person)<-[:postHasCreator]-(post:Post)
         WHERE p.firstname = "Justine" AND p.lastname = "Fenter"
           AND post.browserused CONTAINS "Safari"
-        RETURN DISTINCT post.id AS id
+        RETURN COUNT(DISTINCT post.id) AS has_written_post_with_safari
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         29,
         query,
-        distinct_col="id",
+        count_col="has_written_post_with_safari",
         output_col="has_written_post_with_safari",
-        as_bool=True,
     )
 
 
@@ -603,16 +522,15 @@ def run_query30(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         MATCH (c1:Comment)-[:commentHasCreator]->(p:Person)
               <-[:postHasCreator]-(post:Post)<-[:replyOfPost]-(c2:Comment)
         WHERE c1.id = c2.id
-        RETURN DISTINCT c1.id AS id
+        RETURN COUNT(DISTINCT c1.id) AS has_self_reply
     """
-    return _execute_distinct_count(
+    return _execute_count_as_bool(
         cfg,
         datasets,
         30,
         query,
-        distinct_col="id",
+        count_col="has_self_reply",
         output_col="has_self_reply",
-        as_bool=True,
     )
 
 
