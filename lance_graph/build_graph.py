@@ -85,6 +85,7 @@ def _write_lance(table: pa.Table, name: str) -> str:
 def _create_scalar_index(dataset_path: str, column: str, name: str) -> None:
     dataset = lance.dataset(dataset_path)
     dataset.create_scalar_index(column, index_type="BTREE", name=name, replace=True)
+    print("Created scalar index:", name)
 
 
 def _strip_numeric_suffix(stem: str) -> str:

@@ -859,7 +859,7 @@ requires-dist = [
     { name = "dspy", specifier = ">=3.1.2" },
     { name = "faker", specifier = ">=40.1.2" },
     { name = "kuzu", specifier = ">=0.11.3" },
-    { name = "lance-graph", specifier = ">=0.5.0" },
+    { name = "lance-graph", specifier = ">=0.5.1" },
     { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "neo4j", specifier = ">=6.1.0" },
     { name = "polars", specifier = ">=1.37.1" },
@@ -1257,7 +1257,7 @@ wheels = [
 
 [[package]]
 name = "lance-graph"
-version = "0.5.0"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi" },
@@ -1270,9 +1270,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "uvicorn" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/b5/c6fa826fedc2f506ba5fcdbe279adacf9fe32cfe18d04cf2debdead4c786/lance_graph-0.5.0.tar.gz", hash = "sha256:304a5b7a3cca7ba9a36b799e09347f7ad7c81af6cb1358f5668cd08fcfe44eb3", size = 497484, upload-time = "2026-02-01T05:12:41.414Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/57/17/07d3f84309e76c1ae69cda0650e3e53c65852d62e5d90b41c46fc117d59e/lance_graph-0.5.1.tar.gz", hash = "sha256:79e429da05911dfea29452fa484d14a1a0e9e3837890aa79f6aea7164ceec8ed", size = 499692, upload-time = "2026-02-04T01:34:24.006Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/af/8d3c4f81b68cae7a9f118ac34fdef8e0c33d6a9c7c56e194b61188fba665/lance_graph-0.5.0-cp39-abi3-manylinux_2_39_x86_64.whl", hash = "sha256:5544e3039406eabb2ce3c73d8d0ffa2dd5a41cdbb9305348b6dbff0a83b92926", size = 44743470, upload-time = "2026-02-01T05:12:38.627Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/a1/c4d887c9d0dd8aed0e181434fcb2a07d6361dbeac069aa58ffef2610137a/lance_graph-0.5.1-cp39-abi3-manylinux_2_39_x86_64.whl", hash = "sha256:71c803e055240b45067e453cb1dfbdf8805720921f3b676b38d429ed5516c4fa", size = 44756576, upload-time = "2026-02-04T01:34:21.831Z" },
 ]
 
 [[package]]
