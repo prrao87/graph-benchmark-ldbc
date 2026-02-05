@@ -8,10 +8,10 @@ import query
 
 
 @pytest.fixture(scope="session")
-def graph():
+def engine():
     cfg = query.build_config()
     datasets = query.load_datasets(query.GRAPH_ROOT)
-    return cfg, datasets
+    return query.CypherEngine(cfg, datasets)
 
 
 def _rows(result: Any) -> list[dict[str, Any]]:
@@ -50,9 +50,8 @@ def _assert_single_value(result: Any, key: str, expected_value: Any) -> None:
     assert rows == [{key.lower(): expected_value}]
 
 
-def test_benchmark_query1(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query1, cfg, datasets)
+def test_benchmark_query1(benchmark, engine):
+    result = benchmark(query.run_query1, engine)
     _assert_rows(
         result,
         [{"p.firstname": "Thomas", "p.lastname": "Brown"}],
@@ -60,9 +59,8 @@ def test_benchmark_query1(benchmark, graph):
     )
 
 
-def test_benchmark_query2(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query2, cfg, datasets)
+def test_benchmark_query2(benchmark, engine):
+    result = benchmark(query.run_query2, engine)
     _assert_rows(
         result,
         [
@@ -72,9 +70,8 @@ def test_benchmark_query2(benchmark, graph):
     )
 
 
-def test_benchmark_query3(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query3, cfg, datasets)
+def test_benchmark_query3(benchmark, engine):
+    result = benchmark(query.run_query3, engine)
     _assert_rows(
         result,
         [
@@ -88,15 +85,13 @@ def test_benchmark_query3(benchmark, graph):
     )
 
 
-def test_benchmark_query4(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query4, cfg, datasets)
+def test_benchmark_query4(benchmark, engine):
+    result = benchmark(query.run_query4, engine)
     _assert_rows(result, [{"c.id": 1924145496676}], order_sensitive=True)
 
 
-def test_benchmark_query5(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query5, cfg, datasets)
+def test_benchmark_query5(benchmark, engine):
+    result = benchmark(query.run_query5, engine)
     _assert_rows(
         result,
         [{"p.firstname": "Akihiko", "p.lastname": "Choi"}],
@@ -104,9 +99,8 @@ def test_benchmark_query5(benchmark, graph):
     )
 
 
-def test_benchmark_query6(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query6, cfg, datasets)
+def test_benchmark_query6(benchmark, engine):
+    result = benchmark(query.run_query6, engine)
     _assert_rows(
         result,
         [
@@ -119,21 +113,18 @@ def test_benchmark_query6(benchmark, graph):
     )
 
 
-def test_benchmark_query7(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query7, cfg, datasets)
+def test_benchmark_query7(benchmark, engine):
+    result = benchmark(query.run_query7, engine)
     _assert_rows(result, [])
 
 
-def test_benchmark_query8(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query8, cfg, datasets)
+def test_benchmark_query8(benchmark, engine):
+    result = benchmark(query.run_query8, engine)
     _assert_rows(result, [{"p.id": 13194139534410}], order_sensitive=True)
 
 
-def test_benchmark_query9(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query9, cfg, datasets)
+def test_benchmark_query9(benchmark, engine):
+    result = benchmark(query.run_query9, engine)
     _assert_rows(
         result,
         [{"p.id": 1242, "p.firstname": "Hans", "p.lastname": "Johansson"}],
@@ -141,9 +132,8 @@ def test_benchmark_query9(benchmark, graph):
     )
 
 
-def test_benchmark_query10(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query10, cfg, datasets)
+def test_benchmark_query10(benchmark, engine):
+    result = benchmark(query.run_query10, engine)
     _assert_rows(
         result,
         [
@@ -154,121 +144,101 @@ def test_benchmark_query10(benchmark, graph):
     )
 
 
-def test_benchmark_query11(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query11, cfg, datasets)
+def test_benchmark_query11(benchmark, engine):
+    result = benchmark(query.run_query11, engine)
     _assert_rows(result, [{"num_e": 190, "o.name": "MDLR_Airlines"}])
 
 
-def test_benchmark_query12(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query12, cfg, datasets)
+def test_benchmark_query12(benchmark, engine):
+    result = benchmark(query.run_query12, engine)
     _assert_single_value(result, "num_comments", 3229)
 
 
-def test_benchmark_query13(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query13, cfg, datasets)
+def test_benchmark_query13(benchmark, engine):
+    result = benchmark(query.run_query13, engine)
     _assert_single_value(result, "num_persons", 2293)
 
 
-def test_benchmark_query14(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query14, cfg, datasets)
+def test_benchmark_query14(benchmark, engine):
+    result = benchmark(query.run_query14, engine)
     _assert_single_value(result, "num_forums", 37)
 
 
-def test_benchmark_query15(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query15, cfg, datasets)
+def test_benchmark_query15(benchmark, engine):
+    result = benchmark(query.run_query15, engine)
     _assert_single_value(result, "num_forums", 278)
 
 
-def test_benchmark_query16(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query16, cfg, datasets)
+def test_benchmark_query16(benchmark, engine):
+    result = benchmark(query.run_query16, engine)
     _assert_single_value(result, "num_posts", 3)
 
 
-def test_benchmark_query17(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query17, cfg, datasets)
+def test_benchmark_query17(benchmark, engine):
+    result = benchmark(query.run_query17, engine)
     _assert_rows(result, [{"t.name": "Hamid_Karzai", "tag_count": 32}])
 
 
-def test_benchmark_query18(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query18, cfg, datasets)
+def test_benchmark_query18(benchmark, engine):
+    result = benchmark(query.run_query18, engine)
     _assert_single_value(result, "num_p", 20)
 
 
-def test_benchmark_query19(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query19, cfg, datasets)
+def test_benchmark_query19(benchmark, engine):
+    result = benchmark(query.run_query19, engine)
     _assert_rows(result, [{"l.name": "India", "comment_count": 242}])
 
 
-def test_benchmark_query20(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query20, cfg, datasets)
+def test_benchmark_query20(benchmark, engine):
+    result = benchmark(query.run_query20, engine)
     _assert_single_value(result, "long_comment_count", 3)
 
 
-def test_benchmark_query21(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query21, cfg, datasets)
+def test_benchmark_query21(benchmark, engine):
+    result = benchmark(query.run_query21, engine)
     _assert_single_value(result, "liked", True)
 
 
-def test_benchmark_query22(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query22, cfg, datasets)
+def test_benchmark_query22(benchmark, engine):
+    result = benchmark(query.run_query22, engine)
     _assert_single_value(result, "has_reply_comment", True)
 
 
-def test_benchmark_query23(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query23, cfg, datasets)
+def test_benchmark_query23(benchmark, engine):
+    result = benchmark(query.run_query23, engine)
     _assert_single_value(result, "has_moderator", True)
 
 
-def test_benchmark_query24(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query24, cfg, datasets)
+def test_benchmark_query24(benchmark, engine):
+    result = benchmark(query.run_query24, engine)
     _assert_single_value(result, "has_person", False)
 
 
-def test_benchmark_query25(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query25, cfg, datasets)
+def test_benchmark_query25(benchmark, engine):
+    result = benchmark(query.run_query25, engine)
     _assert_single_value(result, "knows_someone", False)
 
 
-def test_benchmark_query26(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query26, cfg, datasets)
+def test_benchmark_query26(benchmark, engine):
+    result = benchmark(query.run_query26, engine)
     _assert_single_value(result, "has_forum", False)
 
 
-def test_benchmark_query27(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query27, cfg, datasets)
+def test_benchmark_query27(benchmark, engine):
+    result = benchmark(query.run_query27, engine)
     _assert_single_value(result, "has_comment", True)
 
 
-def test_benchmark_query28(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query28, cfg, datasets)
+def test_benchmark_query28(benchmark, engine):
+    result = benchmark(query.run_query28, engine)
     _assert_single_value(result, "has_people", True)
 
 
-def test_benchmark_query29(benchmark, graph):
-    cfg, datasets = graph
-    result = benchmark(query.run_query29, cfg, datasets)
+def test_benchmark_query29(benchmark, engine):
+    result = benchmark(query.run_query29, engine)
     _assert_single_value(result, "has_written_post_with_safari", False)
 
 
-# def test_benchmark_query30(benchmark, graph):
-#     cfg, datasets = graph
-#     result = benchmark(query.run_query30, cfg, datasets)
+# def test_benchmark_query30(benchmark, engine):
+#     result = benchmark(query.run_query30, engine)
 #     _assert_single_value(result, "has_self_reply", True)
