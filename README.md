@@ -93,39 +93,41 @@ each of the 30 queries run in the benchmark.
 
 ## High-level results
 
- Query | neo4j-2025.12.1 (ms) | kuzu-0.11.3 (ms) | ladybug-0.14.1 (ms) | lance-graph-0.5.1 (ms) |
+| Query | neo4j-2025.12.1 (ms) | kuzu-0.11.3 (ms) | ladybug-0.14.1 (ms) | lance-graph-0.5.1 (ms) |
 | --- | --- | --- | --- | --- |
-| q1 | 6ms | 2ms (2.4x) | 2ms (2.7x) | 24ms (0.2x) |
-| q2 | 6ms | 1ms (4.4x) | 2ms (4.2x) | 25ms (0.3x) |
-| q3 | 3ms | 1ms (2.1x) | 1ms (2.2x) | 26ms (0.1x) |
-| q4 | 5ms | 1ms (4.6x) | 1ms (4.3x) | 25ms (0.2x) |
-| q5 | 5ms | 4ms (1.3x) | 4ms (1.4x) | 24ms (0.2x) |
-| q6 | 4ms | 1ms (5.1x) | 1ms (4.6x) | 23ms (0.2x) |
-| q7 | 2ms | 31ms (0.1x) | 31ms (0.1x) | 35ms (0.1x) |
-| q8 | 16ms | 3ms (5.6x) | 3ms (5.5x) | 23ms (0.7x) |
-| q9 | 3ms | 2ms (1.3x) | 2ms (1.2x) | 25ms (0.1x) |
-| q10 | 5ms | 2ms (2.7x) | 2ms (2.6x) | 48ms (0.1x) |
-| q11 | 13ms | 8ms (1.6x) | 8ms (1.5x) | 26ms (0.5x) |
-| q12 | 5ms | 18ms (0.3x) | 18ms (0.3x) | 40ms (0.1x) |
-| q13 | 9ms | 50ms (0.2x) | 52ms (0.2x) | 31ms (0.3x) |
-| q14 | 2ms | 2ms (1.0x) | 2ms (0.9x) | 25ms (0.1x) |
-| q15 | 3ms | 3ms (1.2x) | 3ms (1.2x) | 25ms (0.1x) |
-| q16 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 27ms (0.1x) |
-| q17 | 5ms | 3ms (1.8x) | 3ms (1.8x) | 25ms (0.2x) |
-| q18 | 4ms | 2ms (2.3x) | 2ms (2.3x) | 25ms (0.2x) |
-| q19 | 6ms | 13ms (0.5x) | 14ms (0.5x) | 42ms (0.1x) |
-| q20 | 422ms | 12ms (35.2x) | 11ms (38.1x) | 25ms (16.9x) |
-| q21 | 2ms | 1ms (2.7x) | 1ms (2.7x) | 24ms (0.1x) |
-| q22 | 4ms | 20ms (0.2x) | 21ms (0.2x) | 35ms (0.1x) |
-| q23 | 4ms | 1ms (2.9x) | 1ms (2.8x) | 25ms (0.2x) |
-| q24 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 25ms (0.1x) |
-| q25 | 3ms | 2ms (1.9x) | 2ms (1.8x) | 24ms (0.1x) |
-| q26 | 2ms | 4ms (0.5x) | 4ms (0.5x) | 26ms (0.1x) |
-| q27 | 3ms | 13ms (0.3x) | 16ms (0.2x) | 46ms (0.1x) |
-| q28 | 4ms | 2ms (2.6x) | 2ms (2.3x) | 26ms (0.2x) |
-| q29 | 3ms | 1ms (2.4x) | 1ms (2.4x) | 26ms (0.1x) |
+| q1 | 6ms | 2ms (2.4x) | 2ms (2.7x) | 1ms (3.9x) |
+| q2 | 6ms | 1ms (4.4x) | 2ms (4.2x) | 2ms (2.8x) |
+| q3 | 3ms | 1ms (2.1x) | 1ms (2.2x) | 3ms (0.8x) |
+| q4 | 5ms | 1ms (4.6x) | 1ms (4.3x) | 3ms (1.5x) |
+| q5 | 5ms | 4ms (1.3x) | 4ms (1.4x) | 2ms (2.4x) |
+| q6 | 4ms | 1ms (5.1x) | 1ms (4.6x) | 1ms (5.0x) |
+| q7 | 2ms | 31ms (0.1x) | 31ms (0.1x) | 13ms (0.2x) |
+| q8 | 16ms | 3ms (5.6x) | 3ms (5.5x) | 1ms (12.4x) |
+| q9 | 3ms | 2ms (1.3x) | 2ms (1.2x) | 2ms (1.2x) |
+| q10 | 5ms | 2ms (2.7x) | 2ms (2.6x) | 25ms (0.2x) |
+| q11 | 13ms | 8ms (1.6x) | 8ms (1.5x) | 3ms (4.0x) |
+| q12 | 5ms | 18ms (0.3x) | 18ms (0.3x) | 18ms (0.3x) |
+| q13 | 9ms | 50ms (0.2x) | 52ms (0.2x) | 9ms (1.0x) |
+| q14 | 2ms | 2ms (1.0x) | 2ms (0.9x) | 3ms (0.6x) |
+| q15 | 3ms | 3ms (1.2x) | 3ms (1.2x) | 2ms (1.4x) |
+| q16 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 4ms (0.5x) |
+| q17 | 5ms | 3ms (1.8x) | 3ms (1.8x) | 3ms (2.0x) |
+| q18 | 4ms | 2ms (2.3x) | 2ms (2.3x) | 2ms (2.0x) |
+| q19 | 6ms | 13ms (0.5x) | 14ms (0.5x) | 19ms (0.3x) |
+| q20 | 422ms | 12ms (35.2x) | 11ms (38.1x) | 2ms (175.8x) |
+| q21 | 2ms | 1ms (2.7x) | 1ms (2.7x) | 2ms (0.9x) |
+| q22 | 4ms | 20ms (0.2x) | 21ms (0.2x) | 12ms (0.3x) |
+| q23 | 4ms | 1ms (2.9x) | 1ms (2.8x) | 3ms (1.5x) |
+| q24 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 2ms (0.8x) |
+| q25 | 3ms | 2ms (1.9x) | 2ms (1.8x) | 1ms (2.1x) |
+| q26 | 2ms | 4ms (0.5x) | 4ms (0.5x) | 3ms (0.6x) |
+| q27 | 3ms | 13ms (0.3x) | 16ms (0.2x) | 23ms (0.1x) |
+| q28 | 4ms | 2ms (2.6x) | 2ms (2.3x) | 3ms (1.5x) |
+| q29 | 3ms | 1ms (2.4x) | 1ms (2.4x) | 3ms (1.2x) |
 
-Q30 is the most expensive query of all, and was not run for this stage of the benchmark, because lance-graph's query planner doesn't yet support it. Stay tuned as more updates come along!
+The fastest and slowest systems for each query can be visualized via the following heatmap.
+
+![](./results/benchmark_heatmap.png)
 
 > [!NOTE]
 > The lance-graph query processor is undergoing significant optimization and a new version of the query planner is on the way soon. The numbers here are artificially large because several queries had to be rewritten to materialize results prematurely, with aggregations done externally so as to bypass (as yet) unsupported Cypher syntax in lance-graph. As a result, these results should be treated as a moving target -- follow this repo and check back in soon!
