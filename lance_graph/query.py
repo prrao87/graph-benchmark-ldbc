@@ -6,7 +6,7 @@ from typing import Any, Callable
 import lance
 import polars as pl
 import pyarrow as pa
-from lance_graph import CypherQuery, GraphConfig
+from lance_graph import CypherEngine, GraphConfig
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
 GRAPH_ROOT = SCRIPT_ROOT / "graph_lance"
@@ -97,33 +97,29 @@ def apply_params(query: str, params: dict[str, Any]) -> str:
 
 
 def execute_query(
+    engine: CypherEngine,
     query: str,
-    cfg: GraphConfig,
-    datasets: dict[str, pa.Table],
     params: dict[str, Any] | None = None,
 ) -> pl.DataFrame:
     if params:
         query = apply_params(query, params)
-    cypher = CypherQuery(query)
-    result = cypher.with_config(cfg).execute(datasets)
+    result = engine.execute(query)
     return to_polars(result)
 
 
 def _execute(
-    cfg: GraphConfig,
-    datasets: dict[str, pa.Table],
+    engine: CypherEngine,
     idx: int,
     query: str,
 ) -> pl.DataFrame:
     print(f"\nQuery {idx}:\n{query}")
-    result = execute_query(query, cfg, datasets)
+    result = execute_query(engine, query)
     print(result)
     return result
 
 
 def _execute_count_as_bool(
-    cfg: GraphConfig,
-    datasets: dict[str, pa.Table],
+    engine: CypherEngine,
     idx: int,
     query: str,
     *,
@@ -131,7 +127,7 @@ def _execute_count_as_bool(
     output_col: str,
 ) -> pl.DataFrame:
     print(f"\nQuery {idx}:\n{query}")
-    result = execute_query(query, cfg, datasets)
+    result = execute_query(engine, query)
     df = to_polars(result)
     if df.is_empty():
         value = False
@@ -142,17 +138,18 @@ def _execute_count_as_bool(
     print(out)
     return out
 
-def run_query1(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+
+def run_query1(engine: CypherEngine) -> pl.DataFrame:
     "Who are the names of people who live in Glasgow and are interested in Napoleon?"
     query = """
         MATCH (t:Tag)<-[:hasInterest]-(p:Person)-[:personIsLocatedIn]->(pl:Place)
         WHERE pl.name = "Glasgow" AND t.name = "Napoleon"
         RETURN p.firstname, p.lastname
     """
-    return _execute(cfg, datasets, 1, query)
+    return _execute(engine, 1, query)
 
 
-def run_query2(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query2(engine: CypherEngine) -> pl.DataFrame:
     "IDs of posts by Lei Zhang whose content contains Zulu."
     query = """
         MATCH (p:Person)<-[:postHasCreator]-(post:Post)
@@ -160,20 +157,20 @@ def run_query2(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
           AND post.content CONTAINS "Zulu"
         RETURN post.id
     """
-    return _execute(cfg, datasets, 2, query)
+    return _execute(engine, 2, query)
 
 
-def run_query3(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query3(engine: CypherEngine) -> pl.DataFrame:
     "Creator of post ID 962077547172 and where they studied."
     query = """
         MATCH (post:Post {id: 962077547172})-[:postHasCreator]->(person:Person),
               (person)-[:studyAt]->(org:Organisation)
         RETURN person.firstname, person.lastname, org.name
     """
-    return _execute(cfg, datasets, 3, query)
+    return _execute(engine, 3, query)
 
 
-def run_query4(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query4(engine: CypherEngine) -> pl.DataFrame:
     "Comment IDs by Alfredo Gomez with length > 100."
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)
@@ -182,10 +179,10 @@ def run_query4(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
           AND c.length > 100
         RETURN c.id
     """
-    return _execute(cfg, datasets, 4, query)
+    return _execute(engine, 4, query)
 
 
-def run_query5(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query5(engine: CypherEngine) -> pl.DataFrame:
     "Full names of persons with last name Choi who are members of forums containing John Brown."
     query = """
         MATCH (f:Forum)-[:hasMember]->(p:Person)
@@ -194,20 +191,20 @@ def run_query5(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
         RETURN DISTINCT p.firstname, p.lastname
         LIMIT 10
     """
-    return _execute(cfg, datasets, 5, query)
+    return _execute(engine, 5, query)
 
 
-def run_query6(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query6(engine: CypherEngine) -> pl.DataFrame:
     "IDs of employees who work at Nova_Air and whose last name contains Bravo."
     query = """
         MATCH (p:Person)-[:workAt]->(o:Organisation)
         WHERE o.name = "Nova_Air" AND p.lastname CONTAINS "Bravo"
         RETURN p.id
     """
-    return _execute(cfg, datasets, 6, query)
+    return _execute(engine, 6, query)
 
 
-def run_query7(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query7(engine: CypherEngine) -> pl.DataFrame:
     "Places where person 1786706544494 commented on posts tagged Jamaica."
     query = """
         MATCH (p:Person {id: 1786706544494})<-[:commentHasCreator]-(c:Comment)
@@ -216,10 +213,10 @@ def run_query7(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
         WHERE t.name = "Jamaica"
         RETURN DISTINCT place.name
     """
-    return _execute(cfg, datasets, 7, query)
+    return _execute(engine, 7, query)
 
 
-def run_query8(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query8(engine: CypherEngine) -> pl.DataFrame:
     "Distinct IDs of persons born after 1990 who moderate forums containing Emilio Fernandez."
     query = """
         MATCH (p:Person)<-[:hasModerator]-(f:Forum)
@@ -227,10 +224,10 @@ def run_query8(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
           AND f.title CONTAINS "Emilio Fernandez"
         RETURN DISTINCT p.id
     """
-    return _execute(cfg, datasets, 8, query)
+    return _execute(engine, 8, query)
 
 
-def run_query9(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query9(engine: CypherEngine) -> pl.DataFrame:
     "Persons with last name Johansson who know someone who studied in Tallinn."
     query = """
         MATCH (p:Person)-[:knows]->(p2:Person)-[:studyAt]->(o:Organisation)
@@ -238,10 +235,10 @@ def run_query9(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
         WHERE l.name = "Tallinn" AND p.lastname = "Johansson"
         RETURN p.id, p.firstname, p.lastname
     """
-    return _execute(cfg, datasets, 9, query)
+    return _execute(engine, 9, query)
 
 
-def run_query10(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query10(engine: CypherEngine) -> pl.DataFrame:
     "Unique IDs of persons who commented on posts tagged Cate_Blanchett."
     query = """
         MATCH (c:Comment)-[:replyOfPost]->(post:Post)-[:postHasTag]->(t:Tag),
@@ -249,10 +246,10 @@ def run_query10(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         WHERE t.name = "Cate_Blanchett"
         RETURN DISTINCT p.id
     """
-    return _execute(cfg, datasets, 10, query)
+    return _execute(engine, 10, query)
 
 
-def run_query11(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query11(engine: CypherEngine) -> pl.DataFrame:
     "Non-university organization with most employees."
     query = """
         MATCH (p:Person)-[:workAt]->(o:Organisation)
@@ -261,49 +258,49 @@ def run_query11(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         ORDER BY num_e DESC
         LIMIT 1
     """
-    return _execute(cfg, datasets, 11, query)
+    return _execute(engine, 11, query)
 
 
-def run_query12(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query12(engine: CypherEngine) -> pl.DataFrame:
     "Total number of comments with non-null content created by people in Berlin."
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(p:Person)-[:personIsLocatedIn]->(l:Place)
         WHERE c.content IS NOT NULL AND l.name = "Berlin"
         RETURN COUNT(DISTINCT c.id) AS num_comments
     """
-    return _execute(cfg, datasets, 12, query)
+    return _execute(engine, 12, query)
 
 
-def run_query13(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query13(engine: CypherEngine) -> pl.DataFrame:
     "Total number of persons who liked comments created by Rafael Alonso."
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)<-[:likeComment]-(p2:Person)
         WHERE p.firstname = "Rafael" AND p.lastname = "Alonso"
         RETURN COUNT(DISTINCT p2.id) AS num_persons
     """
-    return _execute(cfg, datasets, 13, query)
+    return _execute(engine, 13, query)
 
 
-def run_query14(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query14(engine: CypherEngine) -> pl.DataFrame:
     "Number of forums with tags belonging to the Athlete tagclass."
     query = """
         MATCH (f:Forum)-[:forumHasTag]->(:Tag)-[:hasType]->(:Tagclass {name: "Athlete"})
         RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute(cfg, datasets, 14, query)
+    return _execute(engine, 14, query)
 
 
-def run_query15(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query15(engine: CypherEngine) -> pl.DataFrame:
     "Total number of forums moderated by employees of Air_Tanzania."
     query = """
         MATCH (f:Forum)-[:hasModerator]->(p:Person)-[:workAt]->(o:Organisation)
         WHERE o.name = "Air_Tanzania"
         RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute(cfg, datasets, 15, query)
+    return _execute(engine, 15, query)
 
 
-def run_query16(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query16(engine: CypherEngine) -> pl.DataFrame:
     "Number of posts containing Copernicus created by persons located in Mumbai."
     query = """
         MATCH (p:Person)-[:personIsLocatedIn]->(l:Place),
@@ -311,10 +308,10 @@ def run_query16(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         WHERE l.name = "Mumbai" AND post.content CONTAINS "Copernicus"
         RETURN COUNT(post.id) AS num_posts
     """
-    return _execute(cfg, datasets, 16, query)
+    return _execute(engine, 16, query)
 
 
-def run_query17(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query17(engine: CypherEngine) -> pl.DataFrame:
     "Most common interest tag among people who studied at Indian_Institute_of_Science."
     query = """
         MATCH (p:Person)-[:studyAt]->(o:Organisation), (p)-[:hasInterest]->(t:Tag)
@@ -323,10 +320,10 @@ def run_query17(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         ORDER BY tag_count DESC
         LIMIT 1
     """
-    return _execute(cfg, datasets, 17, query)
+    return _execute(engine, 17, query)
 
 
-def run_query18(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query18(engine: CypherEngine) -> pl.DataFrame:
     "People studying at The_Oxford_Educational_Institutions with interest in William_Shakespeare."
     query = """
         MATCH (p:Person)-[:studyAt]->(o:Organisation), (p)-[:hasInterest]->(t:Tag)
@@ -334,10 +331,10 @@ def run_query18(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
           AND t.name = "William_Shakespeare"
         RETURN COUNT(DISTINCT p.id) AS num_p
     """
-    return _execute(cfg, datasets, 18, query)
+    return _execute(engine, 18, query)
 
 
-def run_query19(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query19(engine: CypherEngine) -> pl.DataFrame:
     "Place with most comments whose tag contains Copernicus."
     query = """
         MATCH (c:Comment)-[:commentHasTag]->(t:Tag), (c)-[:commentIsLocatedIn]->(l:Place)
@@ -346,20 +343,20 @@ def run_query19(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         ORDER BY comment_count DESC
         LIMIT 1
     """
-    return _execute(cfg, datasets, 19, query)
+    return _execute(engine, 19, query)
 
 
-def run_query20(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query20(engine: CypherEngine) -> pl.DataFrame:
     "Number of comments containing World War II with length > 1000."
     query = """
         MATCH (c:Comment)
         WHERE c.content CONTAINS "World War II" AND c.length > 1000
         RETURN COUNT(c.id) AS long_comment_count
     """
-    return _execute(cfg, datasets, 20, query)
+    return _execute(engine, 20, query)
 
 
-def run_query21(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query21(engine: CypherEngine) -> pl.DataFrame:
     "Has Bill Moore liked the post with ID 1649268446863?"
     query = """
         MATCH (p:Post)<-[:likePost]-(p2:Person)
@@ -368,8 +365,7 @@ def run_query21(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT p.id) AS liked
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         21,
         query,
         count_col="liked",
@@ -377,15 +373,14 @@ def run_query21(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query22(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query22(engine: CypherEngine) -> pl.DataFrame:
     "Did anyone who works at Linxair create a comment that replied to a post?"
     query = """
         MATCH (o:Organisation {name: "Linxair"})<-[:workAt]-(p:Person)<-[:commentHasCreator]-(c:Comment)-[:replyOfPost]->(post:Post)
         RETURN COUNT(DISTINCT c.id) AS has_reply_comment
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         22,
         query,
         count_col="has_reply_comment",
@@ -393,7 +388,7 @@ def run_query22(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query23(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query23(engine: CypherEngine) -> pl.DataFrame:
     "Is there a person with last name Gurung who is a moderator of a forum tagged Norah_Jones?"
     query = """
         MATCH (p:Person)<-[:hasModerator]-(f:Forum)-[:forumHasTag]->(t:Tag)
@@ -401,8 +396,7 @@ def run_query23(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT p.id) AS has_moderator
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         23,
         query,
         count_col="has_moderator",
@@ -410,7 +404,7 @@ def run_query23(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query24(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query24(engine: CypherEngine) -> pl.DataFrame:
     "Is there a person who lives in Paris and is interested in Cate_Blanchett?"
     query = """
         MATCH (p:Person)-[:personIsLocatedIn]->(l:Place), (p)-[:hasInterest]->(t:Tag)
@@ -418,8 +412,7 @@ def run_query24(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT p.id) AS has_person
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         24,
         query,
         count_col="has_person",
@@ -427,7 +420,7 @@ def run_query24(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query25(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query25(engine: CypherEngine) -> pl.DataFrame:
     "Does Amit Singh know anyone who studied at MIT_School_of_Engineering?"
     query = """
         MATCH (amit:Person)-[:knows]->(p2:Person)-[:studyAt]->(o:Organisation)
@@ -436,8 +429,7 @@ def run_query25(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT p2.id) AS knows_someone
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         25,
         query,
         count_col="knows_someone",
@@ -445,7 +437,7 @@ def run_query25(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query26(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query26(engine: CypherEngine) -> pl.DataFrame:
     "Are there any forums with tag Benjamin_Franklin that person 10995116287854 is a member of?"
     query = """
         MATCH (f:Forum)-[:hasMember]->(p:Person), (f)-[:forumHasTag]->(t:Tag)
@@ -453,8 +445,7 @@ def run_query26(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT f.id) AS has_forum
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         26,
         query,
         count_col="has_forum",
@@ -462,7 +453,7 @@ def run_query26(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query27(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query27(engine: CypherEngine) -> pl.DataFrame:
     "Did any person from Toronto create a comment with tag Winston_Churchill?"
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(p:Person),
@@ -472,8 +463,7 @@ def run_query27(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT c.id) AS has_comment
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         27,
         query,
         count_col="has_comment",
@@ -481,7 +471,7 @@ def run_query27(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query28(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query28(engine: CypherEngine) -> pl.DataFrame:
     "Are there people in Manila interested in tags of type BritishRoyalty?"
     query = """
         MATCH (p:Person)-[:hasInterest]->(t:Tag)-[:hasType]->(tc:Tagclass {name: "BritishRoyalty"}),
@@ -489,8 +479,7 @@ def run_query28(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT p.id) AS has_people
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         28,
         query,
         count_col="has_people",
@@ -498,7 +487,7 @@ def run_query28(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query29(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query29(engine: CypherEngine) -> pl.DataFrame:
     "Has Justine Fenter written a post using Safari?"
     query = """
         MATCH (p:Person)<-[:postHasCreator]-(post:Post)
@@ -507,8 +496,7 @@ def run_query29(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT post.id) AS has_written_post_with_safari
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         29,
         query,
         count_col="has_written_post_with_safari",
@@ -516,7 +504,7 @@ def run_query29(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-def run_query30(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame:
+def run_query30(engine: CypherEngine) -> pl.DataFrame:
     "Are there comments replying to posts created by the same person?"
     query = """
         MATCH (c1:Comment)-[:commentHasCreator]->(p:Person)
@@ -525,8 +513,7 @@ def run_query30(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
         RETURN COUNT(DISTINCT c1.id) AS has_self_reply
     """
     return _execute_count_as_bool(
-        cfg,
-        datasets,
+        engine,
         30,
         query,
         count_col="has_self_reply",
@@ -534,7 +521,7 @@ def run_query30(cfg: GraphConfig, datasets: dict[str, pa.Table]) -> pl.DataFrame
     )
 
 
-QUERY_FUNCTIONS: dict[int, Callable[[GraphConfig, dict[str, pa.Table]], pl.DataFrame]] = {
+QUERY_FUNCTIONS: dict[int, Callable[[CypherEngine], pl.DataFrame]] = {
     1: run_query1,
     2: run_query2,
     3: run_query3,
@@ -587,6 +574,7 @@ def _parse_selection(argv: list[str]) -> list[int] | None:
 def main(selected: list[int] | None = None) -> None:
     cfg = build_config()
     datasets = load_datasets(GRAPH_ROOT)
+    engine = CypherEngine(cfg, datasets)
     start = time.perf_counter()
     if selected is None:
         selected = list(QUERY_FUNCTIONS.keys())
@@ -595,7 +583,7 @@ def main(selected: list[int] | None = None) -> None:
         if func is None:
             print(f"Skipping unknown query index: {idx}")
             continue
-        func(cfg, datasets)
+        func(engine)
     elapsed = time.perf_counter() - start
     print(f"\nCompleted {len(selected)} query(ies) in {elapsed:.2f}s")
 
