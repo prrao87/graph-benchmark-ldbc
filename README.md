@@ -95,39 +95,39 @@ each of the 30 queries run in the benchmark.
 
 | Query | neo4j-2025.12.1 (ms) | kuzu-0.11.3 (ms) | ladybug-0.14.1 (ms) | lance-graph-0.5.1 (ms) |
 | --- | --- | --- | --- | --- |
-| q1 | 6ms | 2ms (2.4x) | 2ms (2.7x) | 1ms (3.9x) |
-| q2 | 6ms | 1ms (4.4x) | 2ms (4.2x) | 2ms (2.8x) |
-| q3 | 3ms | 1ms (2.1x) | 1ms (2.2x) | 3ms (0.8x) |
-| q4 | 5ms | 1ms (4.6x) | 1ms (4.3x) | 3ms (1.5x) |
-| q5 | 5ms | 4ms (1.3x) | 4ms (1.4x) | 2ms (2.4x) |
-| q6 | 4ms | 1ms (5.1x) | 1ms (4.6x) | 1ms (5.0x) |
-| q7 | 2ms | 31ms (0.1x) | 31ms (0.1x) | 13ms (0.2x) |
-| q8 | 16ms | 3ms (5.6x) | 3ms (5.5x) | 1ms (12.4x) |
-| q9 | 3ms | 2ms (1.3x) | 2ms (1.2x) | 2ms (1.2x) |
-| q10 | 5ms | 2ms (2.7x) | 2ms (2.6x) | 25ms (0.2x) |
-| q11 | 13ms | 8ms (1.6x) | 8ms (1.5x) | 3ms (4.0x) |
-| q12 | 5ms | 18ms (0.3x) | 18ms (0.3x) | 18ms (0.3x) |
-| q13 | 9ms | 50ms (0.2x) | 52ms (0.2x) | 9ms (1.0x) |
-| q14 | 2ms | 2ms (1.0x) | 2ms (0.9x) | 3ms (0.6x) |
-| q15 | 3ms | 3ms (1.2x) | 3ms (1.2x) | 2ms (1.4x) |
-| q16 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 4ms (0.5x) |
-| q17 | 5ms | 3ms (1.8x) | 3ms (1.8x) | 3ms (2.0x) |
-| q18 | 4ms | 2ms (2.3x) | 2ms (2.3x) | 2ms (2.0x) |
-| q19 | 6ms | 13ms (0.5x) | 14ms (0.5x) | 19ms (0.3x) |
-| q20 | 422ms | 12ms (35.2x) | 11ms (38.1x) | 2ms (175.8x) |
-| q21 | 2ms | 1ms (2.7x) | 1ms (2.7x) | 2ms (0.9x) |
-| q22 | 4ms | 20ms (0.2x) | 21ms (0.2x) | 12ms (0.3x) |
-| q23 | 4ms | 1ms (2.9x) | 1ms (2.8x) | 3ms (1.5x) |
-| q24 | 2ms | 2ms (1.0x) | 2ms (1.0x) | 2ms (0.8x) |
-| q25 | 3ms | 2ms (1.9x) | 2ms (1.8x) | 1ms (2.1x) |
-| q26 | 2ms | 4ms (0.5x) | 4ms (0.5x) | 3ms (0.6x) |
-| q27 | 3ms | 13ms (0.3x) | 16ms (0.2x) | 23ms (0.1x) |
-| q28 | 4ms | 2ms (2.6x) | 2ms (2.3x) | 3ms (1.5x) |
-| q29 | 3ms | 1ms (2.4x) | 1ms (2.4x) | 3ms (1.2x) |
+| q1 | 5.7ms | 2.4ms (2.4x) | 2.1ms (2.7x) | 1.5ms (3.9x) |
+| q2 | 6.4ms | 1.5ms (4.4x) | 1.5ms (4.2x) | 2.3ms (2.8x) |
+| q3 | 2.8ms | 1.4ms (2.1x) | 1.2ms (2.2x) | 3.4ms (0.8x) |
+| q4 | 4.8ms | 1.1ms (4.6x) | 1.1ms (4.3x) | 3.1ms (1.5x) |
+| q5 | 5.1ms | 3.9ms (1.3x) | 3.6ms (1.4x) | 2.1ms (2.4x) |
+| q6 | 4.1ms | 0.8ms (5.1x) | 0.9ms (4.6x) | 0.8ms (5.0x) |
+| q7 | 2.2ms | 31.0ms (0.1x) | 31.1ms (0.1x) | 13.2ms (0.2x) |
+| q8 | 15.6ms | 2.8ms (5.6x) | 2.8ms (5.5x) | 1.3ms (12.4x) |
+| q9 | 2.6ms | 2.0ms (1.3x) | 2.2ms (1.2x) | 2.2ms (1.2x) |
+| q10 | 4.9ms | 1.8ms (2.7x) | 1.9ms (2.6x) | 25.2ms (0.2x) |
+| q11 | 12.9ms | 8.1ms (1.6x) | 8.4ms (1.5x) | 3.2ms (4.0x) |
+| q12 | 4.7ms | 18.4ms (0.3x) | 17.9ms (0.3x) | 17.7ms (0.3x) |
+| q13 | 8.8ms | 50.2ms (0.2x) | 51.6ms (0.2x) | 8.7ms (1.0x) |
+| q14 | 1.6ms | 1.7ms (1.0x) | 1.8ms (0.9x) | 2.8ms (0.6x) |
+| q15 | 3.2ms | 2.7ms (1.2x) | 2.7ms (1.2x) | 2.3ms (1.4x) |
+| q16 | 2.0ms | 2.0ms (1.0x) | 2.0ms (1.0x) | 4.2ms (0.5x) |
+| q17 | 5.3ms | 3.0ms (1.8x) | 2.9ms (1.8x) | 2.6ms (2.0x) |
+| q18 | 4.1ms | 1.7ms (2.3x) | 1.8ms (2.3x) | 2.0ms (2.0x) |
+| q19 | 6.1ms | 13.3ms (0.5x) | 13.6ms (0.5x) | 18.9ms (0.3x) |
+| q20 | 421.8ms | 12.0ms (35.2x) | 11.1ms (38.1x) | 2.4ms (175.8x) |
+| q21 | 1.6ms | 0.6ms (2.7x) | 0.6ms (2.7x) | 1.7ms (0.9x) |
+| q22 | 3.7ms | 19.8ms (0.2x) | 21.2ms (0.2x) | 12.5ms (0.3x) |
+| q23 | 4.0ms | 1.4ms (2.9x) | 1.4ms (2.8x) | 2.7ms (1.5x) |
+| q24 | 1.5ms | 1.5ms (1.0x) | 1.6ms (1.0x) | 2.0ms (0.8x) |
+| q25 | 3.1ms | 1.6ms (1.9x) | 1.7ms (1.8x) | 1.5ms (2.1x) |
+| q26 | 1.8ms | 3.6ms (0.5x) | 3.8ms (0.5x) | 3.1ms (0.6x) |
+| q27 | 3.4ms | 13.4ms (0.3x) | 16.0ms (0.2x) | 23.0ms (0.1x) |
+| q28 | 4.3ms | 1.6ms (2.6x) | 1.9ms (2.3x) | 2.9ms (1.5x) |
+| q29 | 3.1ms | 1.3ms (2.4x) | 1.3ms (2.4x) | 2.7ms (1.2x) |
+
+> [!NOTE]
+> Q30 (self-referencing pattern) is the most expensive query in this benchmark and is currently not supported in lance-graph. The lance-graph query processor is undergoing significant optimization -- follow this repo and check back in soon!
 
 The fastest and slowest systems for each query can be visualized via the following heatmap.
 
 ![](./results/benchmark_heatmap.png)
-
-> [!NOTE]
-> The lance-graph query processor is undergoing significant optimization and a new version of the query planner is on the way soon. The numbers here are artificially large because several queries had to be rewritten to materialize results prematurely, with aggregations done externally so as to bypass (as yet) unsupported Cypher syntax in lance-graph. As a result, these results should be treated as a moving target -- follow this repo and check back in soon!
