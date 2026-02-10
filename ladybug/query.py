@@ -334,8 +334,8 @@ def run_query29(conn: Connection):
 def run_query30(conn: Connection):
     "Are there comments replying to posts created by the same person?"
     query = """
-        MATCH (c:Comment)-[:commentHasCreator]->(p:Person)
-              <-[:postHasCreator]-(post:Post)<-[:replyOfPost]-(c)
+        MATCH (c:Comment)-[:commentHasCreator]->(creator:Person),
+              (c)-[:replyOfPost]->(post:Post)-[:postHasCreator]->(creator)
         RETURN COUNT(DISTINCT c.ID) > 0 AS has_self_reply;
     """
     return _execute(conn, 30, query)
@@ -371,7 +371,7 @@ QUERY_FUNCTIONS: dict[int, Callable[[Connection], object]] = {
     27: run_query27,
     28: run_query28,
     29: run_query29,
-    # 30: run_query30,  # Disabled: self-reply query
+    30: run_query30,
 }
 
 

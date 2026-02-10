@@ -507,10 +507,9 @@ def run_query29(engine: CypherEngine) -> pl.DataFrame:
 def run_query30(engine: CypherEngine) -> pl.DataFrame:
     "Are there comments replying to posts created by the same person?"
     query = """
-        MATCH (c1:Comment)-[:commentHasCreator]->(p:Person)
-              <-[:postHasCreator]-(post:Post)<-[:replyOfPost]-(c2:Comment)
-        WHERE c1.id = c2.id
-        RETURN COUNT(DISTINCT c1.id) AS has_self_reply
+        MATCH (c:Comment)-[:commentHasCreator]->(creator:Person),
+              (c)-[:replyOfPost]->(post:Post)-[:postHasCreator]->(creator)
+        RETURN COUNT(DISTINCT c.ID) AS has_self_reply
     """
     return _execute_count_as_bool(
         engine,
@@ -551,7 +550,7 @@ QUERY_FUNCTIONS: dict[int, Callable[[CypherEngine], pl.DataFrame]] = {
     27: run_query27,
     28: run_query28,
     29: run_query29,
-    # 30: run_query30,  # Disabled: self-reply query
+    30: run_query30,
 }
 
 

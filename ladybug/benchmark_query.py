@@ -236,6 +236,6 @@ def test_benchmark_query29(benchmark, connection):
     _assert_single_value(result, "has_written_post_with_safari", False)
 
 
-# def test_benchmark_query30(benchmark, connection):
-#     result = benchmark(query.run_query30, connection)
-#     _assert_single_value(result, "has_self_reply", True)
+def test_benchmark_query30(benchmark, connection):
+    result = benchmark(query.run_query30, connection)
+    _assert_single_value(result, "has_self_reply", True)

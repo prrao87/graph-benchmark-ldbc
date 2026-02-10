@@ -262,6 +262,6 @@ def test_benchmark_query29(benchmark, session, event_loop):
     _assert_single_value(result, "has_written_post_with_safari", False)
 
 
-# def test_benchmark_query30(benchmark, session, event_loop):
-#     result = benchmark(lambda: _run(event_loop, query.run_query30(session)))
-#     _assert_single_value(result, "has_self_reply", True)
+def test_benchmark_query30(benchmark, session, event_loop):
+    result = benchmark(lambda: _run(event_loop, query.run_query30(session)))
+    _assert_single_value(result, "has_self_reply", True)
