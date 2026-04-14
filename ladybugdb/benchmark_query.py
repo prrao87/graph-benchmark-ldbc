@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import pytest
-import real_ladybug as lb
+import ladybug as lb
 
 import query
 

@@ -2,8 +2,8 @@ import sys
 import time
 from typing import Callable
 
-import real_ladybug as lb
-from real_ladybug import Connection
+import ladybug as lb
+from ladybug import Connection
 
 
 def _execute(conn: Connection, idx: int, query: str):

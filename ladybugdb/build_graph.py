@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import real_ladybug as lb
+import ladybug as lb
 
 
 def setup_db(db_name: str, overwrite: bool = True) -> lb.Connection:
