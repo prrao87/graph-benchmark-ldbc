@@ -1,13 +1,14 @@
 import sys
 import time
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import lance
 import polars as pl
 import pyarrow as pa
-from lance_graph import CypherQuery, GraphConfig
+from lance_graph import CypherEngine, GraphConfig
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
 GRAPH_ROOT = SCRIPT_ROOT / "graph_lance"
@@ -50,7 +51,13 @@ REL_DATASETS = {
 }
 
 GraphDatasets = dict[str, pa.Table]
-QueryContext = tuple[GraphConfig, GraphDatasets]
+
+
+@dataclass(frozen=True)
+class QueryContext:
+    config: GraphConfig
+    datasets: GraphDatasets
+    engine: CypherEngine
 
 
 def build_config() -> GraphConfig:
@@ -94,54 +101,22 @@ def format_cypher_literal(value: Any) -> str:
     return str(value)
 
 
-def inline_unsupported_params(
+def inline_query_params(
     query: str,
     params: Mapping[str, Any] | None = None,
-    *,
-    inline_keys: tuple[str, ...] = (),
-) -> tuple[str, dict[str, Any]]:
-    # lance-graph 0.5.4 supports bound parameters for comparisons, but not for
-    # the right-hand side of CONTAINS, so only those explicit keys are inlined.
-    remaining = dict(params or {})
-    for key in inline_keys:
-        if key not in remaining:
-            raise KeyError(f"Missing query parameter: {key}")
-        query = query.replace(f"${key}", format_cypher_literal(remaining.pop(key)))
-    return query, remaining
-
-
-def build_query(
-    config: GraphConfig,
-    query: str,
-    params: Mapping[str, Any] | None = None,
-    *,
-    inline_keys: tuple[str, ...] = (),
-) -> CypherQuery:
-    query_text, bound_params = inline_unsupported_params(
-        query,
-        params,
-        inline_keys=inline_keys,
-    )
-    statement = CypherQuery(query_text).with_config(config)
-    for key, value in bound_params.items():
-        statement = statement.with_parameter(key, value)
-    return statement
+    ) -> str:
+    rendered = query
+    for key, value in (params or {}).items():
+        rendered = rendered.replace(f"${key}", format_cypher_literal(value))
+    return rendered
 
 
 def execute_query(
-    config: GraphConfig,
-    datasets: GraphDatasets,
+    engine: CypherEngine,
     query: str,
     params: Mapping[str, Any] | None = None,
-    *,
-    inline_keys: tuple[str, ...] = (),
 ) -> pl.DataFrame:
-    result = build_query(
-        config,
-        query,
-        params,
-        inline_keys=inline_keys,
-    ).execute(datasets)
+    result = engine.execute(inline_query_params(query, params))
     return to_polars(result)
 
 
@@ -150,20 +125,11 @@ def _execute(
     idx: int,
     query: str,
     params: Mapping[str, Any] | None = None,
-    *,
-    inline_keys: tuple[str, ...] = (),
 ) -> pl.DataFrame:
-    config, datasets = ctx
     print(f"\nQuery {idx}:\n{query}")
     if params:
         print(f"Parameters: {dict(params)}")
-    result = execute_query(
-        config,
-        datasets,
-        query,
-        params,
-        inline_keys=inline_keys,
-    )
+    result = execute_query(ctx.engine, query, params)
     print(result)
     return result
 
@@ -176,19 +142,11 @@ def _execute_count_as_bool(
     count_col: str,
     output_col: str,
     params: Mapping[str, Any] | None = None,
-    inline_keys: tuple[str, ...] = (),
 ) -> pl.DataFrame:
-    config, datasets = ctx
     print(f"\nQuery {idx}:\n{query}")
     if params:
         print(f"Parameters: {dict(params)}")
-    df = execute_query(
-        config,
-        datasets,
-        query,
-        params,
-        inline_keys=inline_keys,
-    )
+    df = execute_query(ctx.engine, query, params)
     if df.is_empty():
         value = False
     else:
@@ -225,7 +183,6 @@ def run_query2(ctx: QueryContext) -> pl.DataFrame:
             "last_name": "Zhang",
             "content_fragment": "Zulu",
         },
-        inline_keys=("content_fragment",),
     )
 
 
@@ -278,7 +235,6 @@ def run_query5(ctx: QueryContext) -> pl.DataFrame:
             "forum_title_fragment": "John Brown",
             "last_name_fragment": "Choi",
         },
-        inline_keys=("forum_title_fragment", "last_name_fragment"),
     )
 
 
@@ -297,7 +253,6 @@ def run_query6(ctx: QueryContext) -> pl.DataFrame:
             "organization_name": "Nova_Air",
             "last_name_fragment": "Bravo",
         },
-        inline_keys=("last_name_fragment",),
     )
 
 
@@ -337,7 +292,6 @@ def run_query8(ctx: QueryContext) -> pl.DataFrame:
             "min_birthday": "1990-01-01",
             "forum_title_fragment": "Emilio Fernandez",
         },
-        inline_keys=("forum_title_fragment",),
     )
 
 
@@ -447,7 +401,6 @@ def run_query16(ctx: QueryContext) -> pl.DataFrame:
             "place_name": "Mumbai",
             "content_fragment": "Copernicus",
         },
-        inline_keys=("content_fragment",),
     )
 
 
@@ -501,7 +454,6 @@ def run_query19(ctx: QueryContext) -> pl.DataFrame:
         19,
         query,
         {"tag_name_fragment": "Copernicus"},
-        inline_keys=("tag_name_fragment",),
     )
 
 
@@ -520,7 +472,6 @@ def run_query20(ctx: QueryContext) -> pl.DataFrame:
             "content_fragment": "World War II",
             "min_length": 1000,
         },
-        inline_keys=("content_fragment",),
     )
 
 
@@ -707,7 +658,6 @@ def run_query29(ctx: QueryContext) -> pl.DataFrame:
             "last_name": "Fenter",
             "browser_name": "Safari",
         },
-        inline_keys=("browser_name",),
     )
 
 
@@ -778,7 +728,9 @@ def _parse_selection(argv: list[str]) -> list[int] | None:
 
 
 def main(selected: list[int] | None = None) -> None:
-    ctx = (build_config(), load_datasets(GRAPH_ROOT))
+    config = build_config()
+    datasets = load_datasets(GRAPH_ROOT)
+    ctx = QueryContext(config=config, datasets=datasets, engine=CypherEngine(config, datasets))
     start = time.perf_counter()
     if selected is None:
         selected = list(QUERY_FUNCTIONS.keys())

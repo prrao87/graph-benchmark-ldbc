@@ -9,7 +9,13 @@ import query
 
 @pytest.fixture(scope="session")
 def graph_env():
-    return (query.build_config(), query.load_datasets(query.GRAPH_ROOT))
+    config = query.build_config()
+    datasets = query.load_datasets(query.GRAPH_ROOT)
+    return query.QueryContext(
+        config=config,
+        datasets=datasets,
+        engine=query.CypherEngine(config, datasets),
+    )
 
 
 def _rows(result: Any) -> list[dict[str, Any]]:
