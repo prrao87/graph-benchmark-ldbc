@@ -121,7 +121,7 @@ def execute_query(
 
 
 def _execute(
-    ctx: QueryContext,
+    context: QueryContext,
     idx: int,
     query: str,
     params: Mapping[str, Any] | None = None,
@@ -129,13 +129,13 @@ def _execute(
     print(f"\nQuery {idx}:\n{query}")
     if params:
         print(f"Parameters: {dict(params)}")
-    result = execute_query(ctx.engine, query, params)
+    result = execute_query(context.engine, query, params)
     print(result)
     return result
 
 
 def _execute_count_as_bool(
-    ctx: QueryContext,
+    context: QueryContext,
     idx: int,
     query: str,
     *,
@@ -146,7 +146,7 @@ def _execute_count_as_bool(
     print(f"\nQuery {idx}:\n{query}")
     if params:
         print(f"Parameters: {dict(params)}")
-    df = execute_query(ctx.engine, query, params)
+    df = execute_query(context.engine, query, params)
     if df.is_empty():
         value = False
     else:
@@ -156,17 +156,17 @@ def _execute_count_as_bool(
     return out
 
 
-def run_query1(ctx: QueryContext) -> pl.DataFrame:
+def run_query1(context: QueryContext) -> pl.DataFrame:
     "Who are the names of people who live in Glasgow and are interested in Napoleon?"
     query = """
         MATCH (t:Tag)<-[:hasInterest]-(p:Person)-[:personIsLocatedIn]->(pl:Place)
         WHERE pl.name = $place_name AND t.name = $tag_name
         RETURN p.firstname, p.lastname
     """
-    return _execute(ctx, 1, query, {"place_name": "Glasgow", "tag_name": "Napoleon"})
+    return _execute(context, 1, query, {"place_name": "Glasgow", "tag_name": "Napoleon"})
 
 
-def run_query2(ctx: QueryContext) -> pl.DataFrame:
+def run_query2(context: QueryContext) -> pl.DataFrame:
     "IDs of posts by Lei Zhang whose content contains Zulu."
     query = """
         MATCH (p:Person)<-[:postHasCreator]-(post:Post)
@@ -175,7 +175,7 @@ def run_query2(ctx: QueryContext) -> pl.DataFrame:
         RETURN post.id
     """
     return _execute(
-        ctx,
+        context,
         2,
         query,
         {
@@ -186,7 +186,7 @@ def run_query2(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query3(ctx: QueryContext) -> pl.DataFrame:
+def run_query3(context: QueryContext) -> pl.DataFrame:
     "Creator of post ID 962077547172 and where they studied."
     query = """
         MATCH (post:Post)-[:postHasCreator]->(person:Person),
@@ -194,10 +194,10 @@ def run_query3(ctx: QueryContext) -> pl.DataFrame:
         WHERE post.id = $post_id
         RETURN person.firstname, person.lastname, org.name
     """
-    return _execute(ctx, 3, query, {"post_id": 962077547172})
+    return _execute(context, 3, query, {"post_id": 962077547172})
 
 
-def run_query4(ctx: QueryContext) -> pl.DataFrame:
+def run_query4(context: QueryContext) -> pl.DataFrame:
     "Comment IDs by Alfredo Gomez with length > 100."
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)
@@ -207,7 +207,7 @@ def run_query4(ctx: QueryContext) -> pl.DataFrame:
         RETURN c.id
     """
     return _execute(
-        ctx,
+        context,
         4,
         query,
         {
@@ -218,7 +218,7 @@ def run_query4(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query5(ctx: QueryContext) -> pl.DataFrame:
+def run_query5(context: QueryContext) -> pl.DataFrame:
     "Full names of persons with last name Choi who are members of forums containing John Brown."
     query = """
         MATCH (f:Forum)-[:hasMember]->(p:Person)
@@ -228,7 +228,7 @@ def run_query5(ctx: QueryContext) -> pl.DataFrame:
         LIMIT 10
     """
     return _execute(
-        ctx,
+        context,
         5,
         query,
         {
@@ -238,7 +238,7 @@ def run_query5(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query6(ctx: QueryContext) -> pl.DataFrame:
+def run_query6(context: QueryContext) -> pl.DataFrame:
     "IDs of employees who work at Nova_Air and whose last name contains Bravo."
     query = """
         MATCH (p:Person)-[:workAt]->(o:Organisation)
@@ -246,7 +246,7 @@ def run_query6(ctx: QueryContext) -> pl.DataFrame:
         RETURN p.id
     """
     return _execute(
-        ctx,
+        context,
         6,
         query,
         {
@@ -256,7 +256,7 @@ def run_query6(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query7(ctx: QueryContext) -> pl.DataFrame:
+def run_query7(context: QueryContext) -> pl.DataFrame:
     "Places where person 1786706544494 commented on posts tagged Jamaica."
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)
@@ -266,7 +266,7 @@ def run_query7(ctx: QueryContext) -> pl.DataFrame:
         RETURN DISTINCT place.name
     """
     return _execute(
-        ctx,
+        context,
         7,
         query,
         {
@@ -276,7 +276,7 @@ def run_query7(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query8(ctx: QueryContext) -> pl.DataFrame:
+def run_query8(context: QueryContext) -> pl.DataFrame:
     "Distinct IDs of persons born after 1990 who moderate forums containing Emilio Fernandez."
     query = """
         MATCH (p:Person)<-[:hasModerator]-(f:Forum)
@@ -285,7 +285,7 @@ def run_query8(ctx: QueryContext) -> pl.DataFrame:
         RETURN DISTINCT p.id
     """
     return _execute(
-        ctx,
+        context,
         8,
         query,
         {
@@ -295,7 +295,7 @@ def run_query8(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query9(ctx: QueryContext) -> pl.DataFrame:
+def run_query9(context: QueryContext) -> pl.DataFrame:
     "Persons with last name Johansson who know someone who studied in Tallinn."
     query = """
         MATCH (p:Person)-[:knows]->(p2:Person)-[:studyAt]->(o:Organisation)
@@ -304,7 +304,7 @@ def run_query9(ctx: QueryContext) -> pl.DataFrame:
         RETURN p.id, p.firstname, p.lastname
     """
     return _execute(
-        ctx,
+        context,
         9,
         query,
         {
@@ -314,7 +314,7 @@ def run_query9(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query10(ctx: QueryContext) -> pl.DataFrame:
+def run_query10(context: QueryContext) -> pl.DataFrame:
     "Unique IDs of persons who commented on posts tagged Cate_Blanchett."
     query = """
         MATCH (c:Comment)-[:replyOfPost]->(post:Post)-[:postHasTag]->(t:Tag),
@@ -322,10 +322,10 @@ def run_query10(ctx: QueryContext) -> pl.DataFrame:
         WHERE t.name = $tag_name
         RETURN DISTINCT p.id
     """
-    return _execute(ctx, 10, query, {"tag_name": "Cate_Blanchett"})
+    return _execute(context, 10, query, {"tag_name": "Cate_Blanchett"})
 
 
-def run_query11(ctx: QueryContext) -> pl.DataFrame:
+def run_query11(context: QueryContext) -> pl.DataFrame:
     "Non-university organization with most employees."
     query = """
         MATCH (p:Person)-[:workAt]->(o:Organisation)
@@ -334,20 +334,20 @@ def run_query11(ctx: QueryContext) -> pl.DataFrame:
         ORDER BY num_e DESC
         LIMIT 1
     """
-    return _execute(ctx, 11, query, {"organization_type": "university"})
+    return _execute(context, 11, query, {"organization_type": "university"})
 
 
-def run_query12(ctx: QueryContext) -> pl.DataFrame:
+def run_query12(context: QueryContext) -> pl.DataFrame:
     "Total number of comments with non-null content created by people in Berlin."
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(p:Person)-[:personIsLocatedIn]->(l:Place)
         WHERE c.content IS NOT NULL AND l.name = $place_name
         RETURN COUNT(DISTINCT c.id) AS num_comments
     """
-    return _execute(ctx, 12, query, {"place_name": "Berlin"})
+    return _execute(context, 12, query, {"place_name": "Berlin"})
 
 
-def run_query13(ctx: QueryContext) -> pl.DataFrame:
+def run_query13(context: QueryContext) -> pl.DataFrame:
     "Total number of persons who liked comments created by Rafael Alonso."
     query = """
         MATCH (p:Person)<-[:commentHasCreator]-(c:Comment)<-[:likeComment]-(p2:Person)
@@ -355,7 +355,7 @@ def run_query13(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p2.id) AS num_persons
     """
     return _execute(
-        ctx,
+        context,
         13,
         query,
         {
@@ -365,27 +365,27 @@ def run_query13(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query14(ctx: QueryContext) -> pl.DataFrame:
+def run_query14(context: QueryContext) -> pl.DataFrame:
     "Number of forums with tags belonging to the Athlete tagclass."
     query = """
         MATCH (f:Forum)-[:forumHasTag]->(:Tag)-[:hasType]->(tc:Tagclass)
         WHERE tc.name = $tagclass_name
         RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute(ctx, 14, query, {"tagclass_name": "Athlete"})
+    return _execute(context, 14, query, {"tagclass_name": "Athlete"})
 
 
-def run_query15(ctx: QueryContext) -> pl.DataFrame:
+def run_query15(context: QueryContext) -> pl.DataFrame:
     "Total number of forums moderated by employees of Air_Tanzania."
     query = """
         MATCH (f:Forum)-[:hasModerator]->(p:Person)-[:workAt]->(o:Organisation)
         WHERE o.name = $organization_name
         RETURN COUNT(DISTINCT f.id) AS num_forums
     """
-    return _execute(ctx, 15, query, {"organization_name": "Air_Tanzania"})
+    return _execute(context, 15, query, {"organization_name": "Air_Tanzania"})
 
 
-def run_query16(ctx: QueryContext) -> pl.DataFrame:
+def run_query16(context: QueryContext) -> pl.DataFrame:
     "Number of posts containing Copernicus created by persons located in Mumbai."
     query = """
         MATCH (p:Person)-[:personIsLocatedIn]->(l:Place),
@@ -394,7 +394,7 @@ def run_query16(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(post.id) AS num_posts
     """
     return _execute(
-        ctx,
+        context,
         16,
         query,
         {
@@ -404,7 +404,7 @@ def run_query16(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query17(ctx: QueryContext) -> pl.DataFrame:
+def run_query17(context: QueryContext) -> pl.DataFrame:
     "Most common interest tag among people who studied at Indian_Institute_of_Science."
     query = """
         MATCH (p:Person)-[:studyAt]->(o:Organisation), (p)-[:hasInterest]->(t:Tag)
@@ -414,14 +414,14 @@ def run_query17(ctx: QueryContext) -> pl.DataFrame:
         LIMIT 1
     """
     return _execute(
-        ctx,
+        context,
         17,
         query,
         {"organization_name": "Indian_Institute_of_Science"},
     )
 
 
-def run_query18(ctx: QueryContext) -> pl.DataFrame:
+def run_query18(context: QueryContext) -> pl.DataFrame:
     "People studying at The_Oxford_Educational_Institutions with interest in William_Shakespeare."
     query = """
         MATCH (p:Person)-[:studyAt]->(o:Organisation), (p)-[:hasInterest]->(t:Tag)
@@ -430,7 +430,7 @@ def run_query18(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p.id) AS num_p
     """
     return _execute(
-        ctx,
+        context,
         18,
         query,
         {
@@ -440,7 +440,7 @@ def run_query18(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query19(ctx: QueryContext) -> pl.DataFrame:
+def run_query19(context: QueryContext) -> pl.DataFrame:
     "Place with most comments whose tag contains Copernicus."
     query = """
         MATCH (c:Comment)-[:commentHasTag]->(t:Tag), (c)-[:commentIsLocatedIn]->(l:Place)
@@ -450,14 +450,14 @@ def run_query19(ctx: QueryContext) -> pl.DataFrame:
         LIMIT 1
     """
     return _execute(
-        ctx,
+        context,
         19,
         query,
         {"tag_name_fragment": "Copernicus"},
     )
 
 
-def run_query20(ctx: QueryContext) -> pl.DataFrame:
+def run_query20(context: QueryContext) -> pl.DataFrame:
     "Number of comments containing World War II with length > 1000."
     query = """
         MATCH (c:Comment)
@@ -465,7 +465,7 @@ def run_query20(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(c.id) AS long_comment_count
     """
     return _execute(
-        ctx,
+        context,
         20,
         query,
         {
@@ -475,7 +475,7 @@ def run_query20(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query21(ctx: QueryContext) -> pl.DataFrame:
+def run_query21(context: QueryContext) -> pl.DataFrame:
     "Has Bill Moore liked the post with ID 1649268446863?"
     query = """
         MATCH (p:Post)<-[:likePost]-(p2:Person)
@@ -484,7 +484,7 @@ def run_query21(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p.id) AS liked
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         21,
         query,
         count_col="liked",
@@ -497,7 +497,7 @@ def run_query21(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query22(ctx: QueryContext) -> pl.DataFrame:
+def run_query22(context: QueryContext) -> pl.DataFrame:
     "Did anyone who works at Linxair create a comment that replied to a post?"
     query = """
         MATCH (o:Organisation)<-[:workAt]-(p:Person)<-[:commentHasCreator]-(c:Comment)-[:replyOfPost]->(post:Post)
@@ -505,7 +505,7 @@ def run_query22(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT c.id) AS has_reply_comment
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         22,
         query,
         count_col="has_reply_comment",
@@ -514,7 +514,7 @@ def run_query22(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query23(ctx: QueryContext) -> pl.DataFrame:
+def run_query23(context: QueryContext) -> pl.DataFrame:
     "Is there a person with last name Gurung who is a moderator of a forum tagged Norah_Jones?"
     query = """
         MATCH (p:Person)<-[:hasModerator]-(f:Forum)-[:forumHasTag]->(t:Tag)
@@ -522,7 +522,7 @@ def run_query23(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p.id) AS has_moderator
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         23,
         query,
         count_col="has_moderator",
@@ -534,7 +534,7 @@ def run_query23(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query24(ctx: QueryContext) -> pl.DataFrame:
+def run_query24(context: QueryContext) -> pl.DataFrame:
     "Is there a person who lives in Paris and is interested in Cate_Blanchett?"
     query = """
         MATCH (p:Person)-[:personIsLocatedIn]->(l:Place), (p)-[:hasInterest]->(t:Tag)
@@ -542,7 +542,7 @@ def run_query24(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p.id) AS has_person
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         24,
         query,
         count_col="has_person",
@@ -554,7 +554,7 @@ def run_query24(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query25(ctx: QueryContext) -> pl.DataFrame:
+def run_query25(context: QueryContext) -> pl.DataFrame:
     "Does Amit Singh know anyone who studied at MIT_School_of_Engineering?"
     query = """
         MATCH (amit:Person)-[:knows]->(p2:Person)-[:studyAt]->(o:Organisation)
@@ -563,7 +563,7 @@ def run_query25(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p2.id) AS knows_someone
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         25,
         query,
         count_col="knows_someone",
@@ -576,7 +576,7 @@ def run_query25(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query26(ctx: QueryContext) -> pl.DataFrame:
+def run_query26(context: QueryContext) -> pl.DataFrame:
     "Are there any forums with tag Benjamin_Franklin that person 10995116287854 is a member of?"
     query = """
         MATCH (f:Forum)-[:hasMember]->(p:Person), (f)-[:forumHasTag]->(t:Tag)
@@ -584,7 +584,7 @@ def run_query26(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT f.id) AS has_forum
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         26,
         query,
         count_col="has_forum",
@@ -596,7 +596,7 @@ def run_query26(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query27(ctx: QueryContext) -> pl.DataFrame:
+def run_query27(context: QueryContext) -> pl.DataFrame:
     "Did any person from Toronto create a comment with tag Winston_Churchill?"
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(p:Person),
@@ -606,7 +606,7 @@ def run_query27(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT c.id) AS has_comment
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         27,
         query,
         count_col="has_comment",
@@ -618,7 +618,7 @@ def run_query27(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query28(ctx: QueryContext) -> pl.DataFrame:
+def run_query28(context: QueryContext) -> pl.DataFrame:
     "Are there people in Manila interested in tags of type BritishRoyalty?"
     query = """
         MATCH (p:Person)-[:hasInterest]->(t:Tag)-[:hasType]->(tc:Tagclass),
@@ -627,7 +627,7 @@ def run_query28(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT p.id) AS has_people
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         28,
         query,
         count_col="has_people",
@@ -639,7 +639,7 @@ def run_query28(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query29(ctx: QueryContext) -> pl.DataFrame:
+def run_query29(context: QueryContext) -> pl.DataFrame:
     "Has Justine Fenter written a post using Safari?"
     query = """
         MATCH (p:Person)<-[:postHasCreator]-(post:Post)
@@ -648,7 +648,7 @@ def run_query29(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT post.id) AS has_written_post_with_safari
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         29,
         query,
         count_col="has_written_post_with_safari",
@@ -661,7 +661,7 @@ def run_query29(ctx: QueryContext) -> pl.DataFrame:
     )
 
 
-def run_query30(ctx: QueryContext) -> pl.DataFrame:
+def run_query30(context: QueryContext) -> pl.DataFrame:
     "Are there comments replying to posts created by the same person?"
     query = """
         MATCH (c:Comment)-[:commentHasCreator]->(creator:Person),
@@ -669,7 +669,7 @@ def run_query30(ctx: QueryContext) -> pl.DataFrame:
         RETURN COUNT(DISTINCT c.id) AS has_self_reply
     """
     return _execute_count_as_bool(
-        ctx,
+        context,
         30,
         query,
         count_col="has_self_reply",
@@ -730,7 +730,7 @@ def _parse_selection(argv: list[str]) -> list[int] | None:
 def main(selected: list[int] | None = None) -> None:
     config = build_config()
     datasets = load_datasets(GRAPH_ROOT)
-    ctx = QueryContext(config=config, datasets=datasets, engine=CypherEngine(config, datasets))
+    context = QueryContext(config=config, datasets=datasets, engine=CypherEngine(config, datasets))
     start = time.perf_counter()
     if selected is None:
         selected = list(QUERY_FUNCTIONS.keys())
@@ -739,7 +739,7 @@ def main(selected: list[int] | None = None) -> None:
         if func is None:
             print(f"Skipping unknown query index: {idx}")
             continue
-        func(ctx)
+        func(context)
     elapsed = time.perf_counter() - start
     print(f"\nCompleted {len(selected)} query(ies) in {elapsed:.2f}s")
 
