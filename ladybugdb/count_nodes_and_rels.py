@@ -7,8 +7,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import real_ladybug as lb
-from real_ladybug import Connection
+import ladybug as lb
+from ladybug import Connection
 
 DB_NAME = "ldbc_snb_sf1.lbdb"
 DB_PATH = Path(__file__).with_name(DB_NAME)

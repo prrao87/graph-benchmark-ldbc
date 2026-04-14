@@ -6,7 +6,7 @@ All timing numbers shown below are on an M3 Macbook Pro with 32 GB of RAM.
 
 ## Setup
 
-Because Ladybug is an embedded graph database, the database is tightly coupled with the application layer -- there is no server to set up and run. Simply install the Ladybug Python library (`uv add kuzu`) and you're good to go!
+Because Ladybug is an embedded graph database, the database is tightly coupled with the application layer -- there is no server to set up and run. Simply install the Ladybug Python library (`uv add ladybug`) and you're good to go!
 
 ## Build graph
 
