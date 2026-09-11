@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="1.684" timestamp="2026-09-03T16:58:49.647484-04:00" hostname="Mac.lan"><testcase classname="ladybugdb.benchmark_query" name="test_benchmark_query26" time="1.518" /></testsuite></testsuites>

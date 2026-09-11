@@ -8,9 +8,7 @@ from ladybug import Connection
 
 def _execute(conn: Connection, idx: int, query: str):
     print(f"\nQuery {idx}:\n{query}")
-    # without the dummy parameter the engine doesn't cache the plan
-    # alternative: use prepare() and execute()
-    response = conn.execute(query, {"dummy": 0})
+    response = conn.execute(query)
     result = response.get_as_pl()  # type: ignore
     print(result)
     response.close()
@@ -137,12 +135,7 @@ def run_query11(conn: Connection):
         ORDER BY num_e DESC
         LIMIT 1;
     """
-    # Work around https://github.com/LadybugDB/ladybug/issues/906 for Q11 only.
-    _execute(conn, 11, "CALL enable_cached_prepared_statement='none';")
-    try:
-        return _execute(conn, 11, query)
-    finally:
-        _execute(conn, 11, "CALL enable_cached_prepared_statement='both';")
+    return _execute(conn, 11, query)
 
 
 def run_query12(conn: Connection):
