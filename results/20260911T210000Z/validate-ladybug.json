@@ -1,0 +1,476 @@
+{
+  "engine": "ladybug",
+  "validated": true,
+  "nodes": {
+    "Comment": 2052169,
+    "Forum": 90492,
+    "Organisation": 7955,
+    "Person": 9892,
+    "Place": 1460,
+    "Post": 1003605,
+    "Tag": 16080,
+    "Tagclass": 71
+  },
+  "relationships": {
+    "commentHasCreator": 2052169,
+    "commentHasTag": 2698393,
+    "commentIsLocatedIn": 2052169,
+    "containerOf": 1003605,
+    "forumHasTag": 309766,
+    "hasInterest": 229166,
+    "hasMember": 1611869,
+    "hasModerator": 90492,
+    "hasType": 16080,
+    "isPartOf": 1454,
+    "isSubclassOf": 70,
+    "knows": 180623,
+    "likeComment": 1438418,
+    "likePost": 751677,
+    "organisationIsLocatedIn": 7955,
+    "personIsLocatedIn": 9892,
+    "postHasCreator": 1003605,
+    "postHasTag": 713258,
+    "postIsLocatedIn": 1003605,
+    "replyOfComment": 1040749,
+    "replyOfPost": 1011420,
+    "studyAt": 7949,
+    "workAt": 21654
+  },
+  "total_nodes": 3181724,
+  "total_relationships": 17256038,
+  "indexes": {
+    "secondary_indexes": [
+      {
+        "table_name": "Comment",
+        "index_name": "Comment_length_art",
+        "index_type": "ART",
+        "property_names": [
+          "length"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Comment_length_art` FOR (n:`Comment`) ON (n.`length`);"
+      },
+      {
+        "table_name": "Person",
+        "index_name": "Person_lastName_art",
+        "index_type": "ART",
+        "property_names": [
+          "lastName"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Person_lastName_art` FOR (n:`Person`) ON (n.`lastName`);"
+      },
+      {
+        "table_name": "Person",
+        "index_name": "Person_birthday_art",
+        "index_type": "ART",
+        "property_names": [
+          "birthday"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Person_birthday_art` FOR (n:`Person`) ON (n.`birthday`);"
+      },
+      {
+        "table_name": "Person",
+        "index_name": "Person_firstName_art",
+        "index_type": "ART",
+        "property_names": [
+          "firstName"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Person_firstName_art` FOR (n:`Person`) ON (n.`firstName`);"
+      },
+      {
+        "table_name": "Place",
+        "index_name": "Place_name_art",
+        "index_type": "ART",
+        "property_names": [
+          "name"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Place_name_art` FOR (n:`Place`) ON (n.`name`);"
+      },
+      {
+        "table_name": "Tag",
+        "index_name": "Tag_name_art",
+        "index_type": "ART",
+        "property_names": [
+          "name"
+        ],
+        "extension_loaded": true,
+        "index_definition": "CREATE ART INDEX `Tag_name_art` FOR (n:`Tag`) ON (n.`name`);"
+      },
+      {
+        "table_name": "Forum",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Organisation",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Person",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Tagclass",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Place",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Tag",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Comment",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      },
+      {
+        "table_name": "Post",
+        "index_name": "_PK",
+        "index_type": "HASH",
+        "property_names": [
+          "ID"
+        ],
+        "extension_loaded": true,
+        "index_definition": ""
+      }
+    ],
+    "primary_keys": {
+      "Comment": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "creationDate",
+          "type": "TIMESTAMP",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "locationIP",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 3,
+          "name": "browserUsed",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 4,
+          "name": "content",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 5,
+          "name": "length",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Forum": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "title",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "creationDate",
+          "type": "TIMESTAMP",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Organisation": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "type",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "name",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 3,
+          "name": "url",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Person": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "firstName",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "lastName",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 3,
+          "name": "gender",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 4,
+          "name": "birthday",
+          "type": "DATE",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 5,
+          "name": "creationDate",
+          "type": "TIMESTAMP",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 6,
+          "name": "locationIP",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 7,
+          "name": "browserUsed",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Place": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "name",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "url",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 3,
+          "name": "type",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Post": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "imageFile",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "creationDate",
+          "type": "TIMESTAMP",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 3,
+          "name": "locationIP",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 4,
+          "name": "browserUsed",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 5,
+          "name": "language",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 6,
+          "name": "content",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 7,
+          "name": "length",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Tag": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "name",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "url",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ],
+      "Tagclass": [
+        {
+          "property id": 0,
+          "name": "ID",
+          "type": "INT64",
+          "default expression": "NULL",
+          "primary key": true
+        },
+        {
+          "property id": 1,
+          "name": "name",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        },
+        {
+          "property id": 2,
+          "name": "url",
+          "type": "STRING",
+          "default expression": "NULL",
+          "primary key": false
+        }
+      ]
+    }
+  }
+}

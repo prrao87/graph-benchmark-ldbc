@@ -1,0 +1,360 @@
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 1/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 2/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 3/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 4/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 5/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 6/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 7/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 8/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 9/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 10/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 11/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 12/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 13/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 14/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 15/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 16/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 17/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 18/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 19/20 passed
+
+Query 11:
+
+        MATCH (p:Person)-[:workAt]->(o:Organisation)
+        WHERE o.type <> "university"
+        RETURN COUNT(DISTINCT p.ID) AS num_e, o.name
+        ORDER BY num_e DESC
+        LIMIT 1;
+
+shape: (1, 2)
+┌───────┬───────────────┐
+│ num_e ┆ o.name        │
+│ ---   ┆ ---           │
+│ i64   ┆ str           │
+╞═══════╪═══════════════╡
+│ 190   ┆ MDLR_Airlines │
+└───────┴───────────────┘
+Prepared execution 20/20 passed
