@@ -1,8 +1,0 @@
-Schema created successfully.
-Data ingested successfully.
-Created ART index: Place_name_art ON Place(name)
-Created ART index: Tag_name_art ON Tag(name)
-Created ART index: Person_firstName_art ON Person(firstName)
-Created ART index: Person_lastName_art ON Person(lastName)
-Created ART index: Person_birthday_art ON Person(birthday)
-Created ART index: Comment_length_art ON Comment(length)
