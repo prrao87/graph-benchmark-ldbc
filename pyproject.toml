@@ -5,7 +5,6 @@ description = "Graph benchmarks on an artificial dataset "
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "dspy>=3.1.2",
     "faker>=40.1.2",
     "kuzu>=0.11.3",
     "ladybug==0.21.0",
