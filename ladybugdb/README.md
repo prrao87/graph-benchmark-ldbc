@@ -2,11 +2,11 @@
 
 This section describes how benchmark the social network data in [Ladybug](https://github.com/LadybugDB/ladybug), a fork of Kuzu.
 
-Latest measurements (2026-09-29) are on an Apple M5 with 24 GiB RAM. See the [comparison table](../README.md#mean-query-latency) and the [0.21.0 benchmark output](../results/ladybug-0.21.0.txt).
+Latest measurements (2026-09-30) are on an Apple M5 with 24 GiB RAM. See the [comparison table](../README.md#mean-query-latency) and the [0.21.1 benchmark output](../results/ladybug-0.21.1.txt).
 
 ## Setup
 
-Because Ladybug is an embedded graph database, the database is tightly coupled with the application layer -- there is no server to set up and run. The project pins Ladybug to `0.21.0`; run `uv sync --frozen` from the repository root to install the benchmark dependencies.
+Because Ladybug is an embedded graph database, the database is tightly coupled with the application layer -- there is no server to set up and run. The project pins Ladybug to `0.21.1`; run `uv sync --frozen` from the repository root to install the benchmark dependencies.
 
 ## Build graph
 
@@ -62,4 +62,4 @@ uv run --frozen pytest benchmark_query.py \
   --benchmark-sort=fullname
 ```
 
-Latest CLI output: [Ladybug 0.21.0](../results/ladybug-0.21.0.txt). The [raw benchmark JSON](../results/ladybug-0.21.0.json) includes per-round timings. All 30 query assertions passed.
+Latest CLI output: [Ladybug 0.21.1](../results/ladybug-0.21.1.txt). The [raw benchmark JSON](../results/ladybug-0.21.1.json) includes per-round timings. All 30 query assertions passed. The [0.21.0 output](../results/archived/ladybug-0.21.0.txt) remains available for comparison.

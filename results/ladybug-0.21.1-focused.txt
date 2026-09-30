@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.14, pytest-9.0.2, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=True min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=5)
+rootdir: /Users/prrao/code/graph-benchmark-ldbc
+configfile: pyproject.toml
+plugins: anyio-4.12.1, benchmark-5.2.3, asyncio-1.3.0, Faker-40.1.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 30 items / 22 deselected / 8 selected
+
+benchmark_query.py ........                                              [100%]
+
+
+------------------------------------------------------------------------------------- benchmark: 8 tests -------------------------------------------------------------------------------------
+Name (time in ms)              Min                 Max               Mean            StdDev             Median               IQR            Outliers         OPS            Rounds  Iterations
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+test_benchmark_query10      1.7000 (2.89)       2.4825 (2.46)      1.9034 (2.78)     0.2442 (5.57)      1.8259 (2.69)     0.1206 (2.28)          1;1    525.3783 (0.36)          8           1
+test_benchmark_query11      3.8043 (6.47)       6.1340 (6.08)      4.2165 (6.17)     0.2940 (6.70)      4.1763 (6.16)     0.3113 (5.87)         16;2    237.1616 (0.16)        101           1
+test_benchmark_query12      7.4823 (12.73)      9.3425 (9.26)      7.8247 (11.44)    0.3825 (8.72)      7.7449 (11.43)    0.1633 (3.08)          1;2    127.8008 (0.09)         20           1
+test_benchmark_query13      5.3962 (9.18)       6.0184 (5.97)      5.6401 (8.25)     0.1312 (2.99)      5.6241 (8.30)     0.1819 (3.43)         14;1    177.3005 (0.12)         47           1
+test_benchmark_query16      0.8857 (1.51)       1.3111 (1.30)      1.0465 (1.53)     0.0771 (1.76)      1.0466 (1.54)     0.1050 (1.98)         18;1    955.5855 (0.65)         67           1
+test_benchmark_query27      3.1383 (5.34)       4.4786 (4.44)      3.3574 (4.91)     0.2084 (4.75)      3.3093 (4.88)     0.1610 (3.04)          7;4    297.8478 (0.20)         57           1
+test_benchmark_query29      0.5880 (1.0)        1.0086 (1.0)       0.6838 (1.0)      0.0439 (1.0)       0.6776 (1.0)      0.0530 (1.0)         133;9  1,462.4621 (1.0)         494           1
+test_benchmark_query30     92.5612 (157.43)   100.7770 (99.92)    95.8146 (140.13)   2.3361 (53.24)    94.9842 (140.17)   2.2584 (42.61)         2;1     10.4368 (0.01)          9           1
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
+======================= 8 passed, 22 deselected in 4.52s =======================
